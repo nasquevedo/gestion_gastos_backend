@@ -5,19 +5,19 @@ const Schema = mongoose.Schema;
 const expenseTypeSchema = new Schema({
     name: {
         type: String,
-        require: true
+        required: true
     },
     status: {
         type: String,
-        require: true
+        required: true
     },
     created_at: {
         type: Date,
-        require: true
+        required: true
     },
-    creator : {
+    creator: {
         type: Schema.Types.ObjectId,
-        require: false
+        required: false
     }
 });
 

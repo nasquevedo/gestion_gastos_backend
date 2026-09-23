@@ -11,23 +11,42 @@ router.get('/', auth, goalController.getGoals);
 
 router.get('/budget/', auth, goalController.getCurrentBudgetGoals);
 
-router.get('/:id', auth, goalController.getGoal);
+router.get('/:id', auth, param('id').isMongoId(), validateRequest, goalController.getGoal);
 
 router.post(
     '/', 
     auth, 
     [
-        body("name").notEmpty(),
-        body("type").notEmpty(),
-        body("value").notEmpty().isNumeric(),
-        body("objective_date").isDate(),
-        body("status").notEmpty(),
-        body("created_at").notEmpty()
+        body('name').trim().notEmpty(),
+        body('type').trim().notEmpty(),
+        body('subtype').optional().trim(),
+        body('value').isNumeric(),
+        body('current').optional().isNumeric(),
+        body('objective_date').optional().isISO8601(),
+        body('month').optional().trim().notEmpty(),
+        body('status').trim().notEmpty(),
+        body('created_at').isISO8601()
     ],
     validateRequest,
     goalController.createGoal
 );
 
-router.put('/:id', auth, goalController.updateGoal);
+router.put(
+    '/:id',
+    auth,
+    [
+        param('id').isMongoId(),
+        body('name').trim().notEmpty(),
+        body('type').trim().notEmpty(),
+        body('subtype').optional().trim(),
+        body('value').isNumeric(),
+        body('current').optional().isNumeric(),
+        body('objective_date').optional().isISO8601(),
+        body('month').optional().trim().notEmpty(),
+        body('status').trim().notEmpty()
+    ],
+    validateRequest,
+    goalController.updateGoal
+);
 
 module.exports = router;

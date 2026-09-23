@@ -51,7 +51,7 @@ exports.signup = async (req, res, next) => {
 exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).select('+password');
 
         if (!user) {
             return res.status(400).json({ error: 'Bad Request', message: 'Invalid credentials' });
@@ -110,7 +110,7 @@ exports.logout = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
     try {
-        const user = await User.findById(req.userId);
+        const user = await User.findById(req.userId).select('+password');
 
         if (!user) {
             return res.status(404).json({ error: 'Not Found', message: 'User not found' });

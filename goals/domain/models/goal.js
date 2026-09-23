@@ -41,7 +41,7 @@ const GoalSchema = new Schema({
     },
     creator: {
         type: Schema.Types.ObjectId,
-        ref: 'Users',
+        ref: 'User',
         required: true
     }
 });

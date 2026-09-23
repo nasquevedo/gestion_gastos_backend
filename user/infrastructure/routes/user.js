@@ -4,11 +4,14 @@ const { body } = require('express-validator');
 const userController = require('../../application/controllers/user');
 const auth = require('../../../middleware/auth');
 const validateRequest = require('../../../middleware/validateRequest');
+const rateLimiter = require('../../../middleware/rateLimiter');
 
 const router = express.Router();
+const authLimiter = rateLimiter({ limit: Number(process.env.AUTH_RATE_LIMIT || 10) });
 
 router.post(
     '/signup',
+    authLimiter,
     [
         body('name').trim().notEmpty(),
         body('lastname').trim().notEmpty(),
@@ -22,6 +25,7 @@ router.post(
 
 router.post(
     '/login',
+    authLimiter,
     [
         body('email').isEmail().normalizeEmail(),
         body('password').notEmpty()
@@ -62,6 +66,7 @@ router.delete('/delete', auth, userController.delete);
 
 router.post(
     '/send',
+    rateLimiter({ limit: Number(process.env.CONTACT_RATE_LIMIT || 5) }),
     [
         body('email').isEmail().normalizeEmail(),
         body('subject').trim().notEmpty(),
